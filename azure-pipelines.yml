@@ -65,7 +65,7 @@ stages:
   - job: Deploy
     displayName: Deploy
     pool:
-      name: 'volvo'
+      name: 'volvo'  # Specify the agent pool name
     steps:
     - task: KubernetesManifest@0
       displayName: Create imagePullSecret
@@ -78,12 +78,10 @@ stages:
       displayName: Deploy to Kubernetes cluster
       inputs:
         action: 'deploy'
-        kubernetesServiceConnection: 'volvokubernetesconnection'
+        kubernetesServiceConnection: 'kuberneteserviceconnection'  # Corrected service connection name
         namespace: 'default'
         manifests: |
           $(Pipeline.Workspace)/manifests/deployment.yaml
           $(Pipeline.Workspace)/manifests/service.yaml
         imagePullSecrets: '$(imagePullSecret)'
-
-
 
