@@ -59,29 +59,42 @@ stages:
 
 
 - stage: Deploy
-  displayName: Deploy to AKS
-  dependsOn: Push
+  displayName: Deploy stage
+  dependsOn: Build
   jobs:
-  - job: Deploy
-    displayName: Deploy
+  - deployment: Deploy
+    displayName: Deploy job
     pool:
-      name: 'volvo'  # Specify the agent pool name
-    steps:
-    - task: KubernetesManifest@0
-      displayName: Create imagePullSecret
-      inputs:
-        action: createSecret
-        secretName: $(imagePullSecret)
-        dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+      name: 'volvo'
+    environment: 'volvokubernetes.namespace-default' # Customize with your environment
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: 'manifests'
+              downloadPath: '$(System.ArtifactsDirectory)/manifests'
 
-    - task: KubernetesManifest@0
-      displayName: Deploy to Kubernetes cluster
-      inputs:
-        action: 'deploy'
-        kubernetesServiceConnection: 'kuberneteserviceconnection'  # Corrected service connection name
-        namespace: 'default'
-        manifests: |
-          $(Pipeline.Workspace)/manifests/deployment.yaml
-          $(Pipeline.Workspace)/manifests/service.yaml
-        imagePullSecrets: '$(imagePullSecret)'
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              namespace: default # Use the default namespace
+              dockerRegistryEndpoint: volvosampleappregistry # Use the container registry name
+
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              action: deploy
+              kubernetesServiceConnection: kuberneteserviceconnection # Use the Kubernetes service connection name
+              namespace: default # Use the default namespace
+              manifests: |
+                $(System.ArtifactsDirectory)/manifests/deployment.yml
+                $(System.ArtifactsDirectory)/manifests/service.yml
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                volvosampleappregistry.azurecr.io/volvo-sample-app:v1 # Use the container registry and image repository with the specified tag
 
