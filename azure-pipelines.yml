@@ -57,7 +57,6 @@ stages:
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
         tags: '$(tag)'  # Tag format without the container registry
 
-
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
@@ -65,35 +64,22 @@ stages:
   - deployment: Deploy
     displayName: Deploy job
     pool:
-      vmImage: $(vmImageName)
-    environment: 'volvokubernetes' # Corrected environment configuration
+      name: 'volvo'
+    environment: 'volvokubernetes'
     strategy:
       runOnce:
         deploy:
           steps:
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              artifactName: 'manifests'
-              downloadPath: '$(System.ArtifactsDirectory)/manifests'
-
-          - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
-            inputs:
-              action: createSecret
-              secretName: $(imagePullSecret)
-              namespace: default
-              dockerRegistryEndpoint: volvosampleappregistry
-
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
-              kubernetesServiceConnection: kuberneteserviceconnection
-              namespace: default
+              kubernetesServiceConnection: 'kuberneteserviceconnection'
+              namespace: 'default'
               manifests: |
-                $(System.ArtifactsDirectory)/manifests/deployment.yml
-                $(System.ArtifactsDirectory)/manifests/service.yml
+                $(System.DefaultWorkingDirectory)/kubernetes/deployment.yaml
+                $(System.DefaultWorkingDirectory)/kubernetes/service.yaml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                volvosampleappregistry.azurecr.io/volvo-sample-app:v1
+                $(containerRegistry)/$(imageRepository):$(tag)
