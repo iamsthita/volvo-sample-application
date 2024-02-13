@@ -55,7 +55,7 @@ stages:
         repository: '$(imageRepository)'
         command: 'push'
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
-        tags: $(tag)'  # Tag format without the container registry
+        tags: $(tag)  # Tag format without the container registry
 
 
 - stage: Deploy
