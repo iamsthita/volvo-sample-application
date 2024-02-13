@@ -39,3 +39,72 @@ stages:
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
         tags: '$(tag)'  # Tag format without the container registry
 
+- stage: Push
+  displayName: Push stage
+  jobs:
+  - job: Push
+    displayName: Push
+    pool:
+      name: 'volvo'  # Specify the pool name explicitly
+
+    steps:
+    - task: Docker@2
+      displayName: Push an image to container registry
+      inputs:
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        command: 'push'
+        Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
+        tags: $(tag)'  # Tag format without the container registry
+
+
+- stage: Deploy
+  displayName: Deploy to AKS
+  dependsOn: Push  # Modified dependency to ensure image is pushed before deployment
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      name: 'volvo'  # Specify the pool name explicitly
+
+    steps:
+    - task: KubernetesManifest@0
+      displayName: Deploy to AKS
+      inputs:
+        action: deploy
+        kubernetesServiceConnection: 'volvokubernetesconnection'  # Replace with your AKS service connection
+        namespace: 'default'
+        manifests: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: volvokubernetes-deployment
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: volvokubernetes
+            template:
+              metadata:
+                labels:
+                  app: volvokubernetes
+              spec:
+                containers:
+                - name: volvokubernetes
+                  image: $(imageRepository):$(tag)  # Using the correct image reference
+                  ports:
+                  - containerPort: 80
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: volvokubernetes-service
+          spec:
+            selector:
+              app: volvokubernetes
+            ports:
+            - protocol: TCP
+              port: 80
+              targetPort: 80
+
+
