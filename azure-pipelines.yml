@@ -55,7 +55,7 @@ stages:
         repository: '$(imageRepository)'
         command: 'push'
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
-        tags: $(tag)  # Tag format without the container registry
+        tags: '$(tag)'  # Tag format without the container registry
 
 
 - stage: Deploy
@@ -91,7 +91,7 @@ stages:
               spec:
                 containers:
                 - name: volvokubernetes
-                  image: $(imageRepository):$(tag)  # Using the correct image reference
+                  image: $(containerRegistry)/$(imageRepository):$(tag)  # Using the correct image reference
                   ports:
                   - containerPort: 80
           ---
