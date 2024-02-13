@@ -41,7 +41,7 @@ stages:
         repository: '$(imageRepository)'
         command: 'build'
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
-        tags: '$(containerRegistry)/$(imageRepository):$(tag)'  # Including container registry and tag
+        tags: '$(imageRepository):$(tag)'  # Tag format without the container registry
 
 - stage: Push
   displayName: Push stage
@@ -59,7 +59,8 @@ stages:
         repository: '$(imageRepository)'
         command: 'push'
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
-        tags: '$(containerRegistry)/$(imageRepository):$(tag)'  # Including container registry and tag
+        tags: '$(imageRepository):$(tag)'  # Tag format without the container registry
+
 
 - stage: Deploy
   displayName: Deploy to AKS
