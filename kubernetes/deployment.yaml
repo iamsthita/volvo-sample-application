@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volvo-sample-app-deployment
+  labels:
+    app: volvo-sample-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: volvo-sample-app
+  template:
+    metadata:
+      labels:
+        app: volvo-sample-app
+    spec:
+      containers:
+      - name: volvo-sample-app-container
+        image: volvosampleappregistry.azurecr.io/volvo-sample-app:v1
+        ports:
+        - containerPort: 8080
