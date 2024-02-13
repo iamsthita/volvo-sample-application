@@ -68,7 +68,7 @@ stages:
         displayName: Deploy to AKS
         inputs:
           action: deploy
-          kubernetesServiceConnection: 'yourAKSServiceConnection'  # Replace with your AKS service connection
+          kubernetesServiceConnection: 'volvokubernetes'  # Replace with your AKS service connection
           namespace: 'default'
           manifests: |
             apiVersion: apps/v1
