@@ -11,29 +11,95 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '4351d84f-8a08-457c-b232-730fb99f406d'
-  imageRepository: 'volvosampleapplication'
+  imageRepository: 'volvo-sample-app'
   containerRegistry: 'volvosampleappregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/sampleApp/dockerfile'
-  tag: '$(Build.BuildId)'
+  tag: 'v1'  # Using specific tag 'v1' instead of BuildId
 
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  # Agent VM (self-hosted)
+  pool:
+    name: 'Volvo'
 
 stages:
+
 - stage: Build
-  displayName: Build and push stage
+  displayName: Build stage
   jobs:
   - job: Build
     displayName: Build
     pool:
-      vmImage: $(vmImageName)
+      name: $(pool.name)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Build an image for container registry
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        command: 'build'
+        Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
+        tags: '$(containerRegistry)/$(imageRepository):$(tag)'  # Including container registry and tag
+
+- stage: Push
+  displayName: Push stage
+  jobs:
+  - job: Push
+    displayName: Push
+    pool:
+      name: $(pool.name)
+    steps:
+    - task: Docker@2
+      displayName: Push an image to container registry
+      inputs:
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        command: 'push'
+        Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
+        tags: '$(containerRegistry)/$(imageRepository):$(tag)'  # Including container registry and tag
+
+- stage: Deploy
+  displayName: Deploy to AKS
+  dependsOn: Push  # Modified dependency to ensure image is pushed before deployment
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      name: $(pool.name)
+    steps:
+    - task: KubernetesManifest@0
+      displayName: Deploy to AKS
+      inputs:
+        action: deploy
+        kubernetesServiceConnection: 'yourAKSServiceConnection'  # Replace with your AKS service connection
+        namespace: 'default'
+        manifests: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: volvoassignment-deployment
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: volvoassignment
+            template:
+              metadata:
+                labels:
+                  app: volvoassignment
+              spec:
+                containers:
+                - name: volvoassignment
+                  image: $(containerRegistry)/$(imageRepository):$(tag)  # Using the correct image reference
+                  ports:
+                  - containerPort: 80
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: volvoassignment-service
+          spec:
+            selector:
+              app: volvoassignment
+            ports:
+            - protocol: TCP
+              port: 80
+              targetPort: 80
