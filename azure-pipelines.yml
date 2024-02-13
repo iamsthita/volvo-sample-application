@@ -42,8 +42,7 @@ stages:
   jobs:
   - job: Push
     displayName: Push
-    pool:
-      name: $(pool.name)
+
     steps:
       - task: Docker@2
         displayName: Push an image to container registry
@@ -60,8 +59,7 @@ stages:
   jobs:
   - job: Deploy
     displayName: Deploy
-    pool:
-      name: $(pool.name)
+
     steps:
       - task: KubernetesManifest@0
         displayName: Deploy to AKS
