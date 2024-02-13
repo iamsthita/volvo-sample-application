@@ -18,10 +18,9 @@ variables:
 
   # Agent VM (self-hosted)
   pool:
-    name: 'Volvo'
+  name: 'Volvo'
 
 stages:
-
 - stage: Build
   displayName: Build stage
   jobs:
