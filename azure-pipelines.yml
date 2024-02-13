@@ -59,7 +59,7 @@ stages:
 
 - stage: Deploy
   displayName: Deploy stage
-  dependsOn: Build
+  dependsOn: Push
   jobs:
   - deployment: Deploy
     displayName: Deploy job
