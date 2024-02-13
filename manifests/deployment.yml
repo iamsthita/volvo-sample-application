@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: iamsthitavolvosampleapplication 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iamsthitavolvosampleapplication
+  template:
+    metadata:
+      labels:
+        app: iamsthitavolvosampleapplication 
+    spec:
+      containers:
+        - name: iamsthitavolvosampleapplication 
+          image: volvosampleappregistry.azurecr.io/iamsthitavolvosampleapplication
+          ports:
+          - containerPort: 5000
