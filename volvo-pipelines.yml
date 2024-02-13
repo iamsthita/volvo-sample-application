@@ -13,7 +13,8 @@ variables:
   dockerRegistryServiceConnection: '7aa18d20-49d2-4c9e-9078-3bc938e676e9'
   imageRepository: 'iamsthitavolvosampleapplication'
   containerRegistry: 'volvosampleappregistry.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  dockerfilePath: '**/dockerfile'
+  
   tag: '$(Build.BuildId)'
   imagePullSecret: 'volvosampleappregistry90a4-auth'
 
