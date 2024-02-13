@@ -71,25 +71,25 @@ stages:
         displayName: Deploy to AKS
         inputs:
           action: deploy
-          kubernetesServiceConnection: 'volvokubernetes'  # Replace with your AKS service connection
+          kubernetesServiceConnection: 'volvokubernetesconnection'  # Replace with your AKS service connection
           namespace: 'default'
           manifests: |
             apiVersion: apps/v1
             kind: Deployment
             metadata:
-              name: volvoassignment-deployment
+              name: volvokubernetes-deployment
             spec:
               replicas: 1
               selector:
                 matchLabels:
-                  app: volvoassignment
+                  app: volvokubernetes
               template:
                 metadata:
                   labels:
-                    app: volvoassignment
+                    app: volvokubernetes
                 spec:
                   containers:
-                  - name: volvoassignment
+                  - name: volvokubernetes
                     image: $(containerRegistry)/$(imageRepository):$(tag)  # Using the correct image reference
                     ports:
                     - containerPort: 80
@@ -97,10 +97,10 @@ stages:
             apiVersion: v1
             kind: Service
             metadata:
-              name: volvoassignment-service
+              name: volvokubernetes-service
             spec:
               selector:
-                app: volvoassignment
+                app: volvokubernetes
               ports:
               - protocol: TCP
                 port: 80
