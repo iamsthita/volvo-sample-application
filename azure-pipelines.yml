@@ -37,5 +37,5 @@ stages:
         repository: '$(imageRepository)'
         command: 'build'
         Dockerfile: '$(dockerfilePath)'  # Correcting Dockerfile path
-        tags: '$(imageRepository):$(tag)'  # Tag format without the container registry
+        tags: '$(tag)'  # Tag format without the container registry
 
