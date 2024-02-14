@@ -26,6 +26,9 @@ This repository contains the solution for a practical test evaluating cloud know
 
 ## Steps to Complete the Assignment
 
+<img width="475" alt="image" src="https://github.com/iamsthita/volvo-sample-application/assets/132139960/1d1b53cc-1781-4f7f-b47d-c83752ab521e">
+
+
 ### 1. Environment Setup
 
 - Ensured I had an Azure account with free tier access.
