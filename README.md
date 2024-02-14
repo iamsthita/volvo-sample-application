@@ -1,7 +1,7 @@
 **Volvo Cloud Platform Engineer Practical Test**
-
+<br><br>
 **Objective:** Evaluate cloud knowledge and experience through practical exercises.
-
+<br><br>
 **Information about test:**
 
 ●   There is no time limit for the test but please try to complete it earliest so we can proceed with next steps in the interview process.
@@ -15,7 +15,7 @@
 ●   Please maintain git code commit history (Optional).
 
 ●   Please send us your GitHub repo link to review code (infrastructure code, application code and deploy application to cloud code)
-
+<br><br>
 **Exercise for Microsoft Azure or Amazon Web Service (AWS) or Google Cloud Platform (GCP):**
 
 ● Create a sample application to print “Welcome to 2022”and user agent info using any programming language.
@@ -27,14 +27,11 @@
 ● Deploy your application using any type of automated pipeline on container orchestration platform in Azure or AWS or GCP.
 
 ● Give us an endpoint to access your application.
-
-
-
+<br> <br>
 This repository contains the solution for a practical test evaluating cloud knowledge and experience, focusing on deploying a sample application to Microsoft Azure using Infrastructure as Code (IaC) practices with Terraform. The assignment involves creating a sample application, setting up a virtual network, building and deploying the application using Azure Kubernetes Service (AKS), and documenting the entire process.
-
-
-**Steps to Complete the Assignment.**
-
+<br><br>
+**Steps to Complete the Assignment:**
+<br><br>
 **1. Create the Sample Application**
 
 ● 	Choose a programming language (e.g., Python-flask) to develop an application that prints "Welcome to 2022" along with user agent info.
