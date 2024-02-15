@@ -49,7 +49,7 @@ This repository contains the solution for a practical test evaluating cloud know
 ### 4. Application Building and Containerization
 
 - Dockerized the Flask application by creating a Dockerfile.
-- Ensured the Dockerfile followed best practices, such as utilizing a single-stage build and a lightweight base image.
+- Ensured the Dockerfile followed best practices, such as utilizing a multi-stage build and a lightweight base image.
 
 ### 5. Deployment Automation Using CI/CD Pipeline
 
